@@ -10,13 +10,28 @@ const messageSystem = {
 
   fetchMessages() {
     // https://thecrew.cc/api/message/read.php?token=__TOKEN__ GET
+    fetch ('https://thecrew.cc/api/message/read.php?token=' + userSystem.token)
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    });
   }
 };
 
 const userSystem = {
   token: "",
   loggedIn: false,
+  checkToken() {
+    const token = this.getToken();
+    if(token !== null) {
+      this.token = token;
 
+      messageSystem.fetchMessages();
+
+      document.getElementById('loginWindow').remove();
+  
+    }
+  },
   saveToken() {
     localStorage.setItem("token", this.token);
   },
@@ -31,6 +46,16 @@ const userSystem = {
 
   login(email, password) {
     // https://thecrew.cc/api/user/login.php POST
+    fetch ('https://thecrew.cc/api/user/login.php', {method: 'POST', body: JSON.stringify({email: email, password: password}) })
+    .then(response => response.json())
+    .then(data => {
+      const token = data.token;
+      this.token = token;
+      this.saveToken();
+      messageSystem.fetchMessages();
+      console.log(data);
+
+    });
   },
 
   updateUser(password, handle) {
@@ -40,7 +65,16 @@ const userSystem = {
 
 const display = {
   initFields() {
-  }
+    const form = document.getElementById("loginForm");
+    form.addEventListener("submit", this.submitHandler);
+    console.log('form =', form);
+  },
+  submitHandler(e){
+    e.preventDefault();
+    const email = document.getElementById('emailField').value;
+    const password = document.getElementById('passwordField').value;
+    userSystem.login(email, password);
+},
 };
-
   display.initFields();
+userSystem.checkToken();
