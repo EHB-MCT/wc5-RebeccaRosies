@@ -14,8 +14,25 @@ const messageSystem = {
     .then(response => response.json())
     .then(data => {
       console.log(data);
-    });
+      this.renderMessages(data);
+    })
+    .catch(error => console.log('Request failed:', error) );
+  },
+
+  renderMessages(data){
+    const chatBox = document.getElementById('output');
+    const messages = data;
+      messages.map(data => {
+        const message = 
+        `<div class="message">
+        <span class="by">${data.handle}</span>
+        <span class="on">${data.created_at}</span>
+        <p>${data.message}</p>
+        </div>`;
+      chatBox.insertAdjacentHTML("beforeEnd", message);
+      });
   }
+  
 };
 
 const userSystem = {
