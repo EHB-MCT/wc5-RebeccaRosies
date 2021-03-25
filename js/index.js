@@ -32,7 +32,6 @@ const messageSystem = {
       chatBox.insertAdjacentHTML("beforeEnd", message);
       });
   }
-  
 };
 
 const userSystem = {
