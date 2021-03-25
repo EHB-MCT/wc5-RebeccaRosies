@@ -3,10 +3,29 @@
 const messageSystem = {
   startFetching() {
   },
-
+  initFields(){
+    const messageForm = document.getElementById('messageForm');
+    messageForm.addEventListener('submit',this.submitHandler);
+    console.log("messageForm", messageForm);
+  },
+  submitHandler(e){
+    e.preventDefault();
+    const userMessage = document.getElementsByName('userMessage')[0];
+    const msg = userMessage.value;
+    if(msg != ""){
+     messageSystem.sendMessage(msg);
+    }
+  },
   sendMessage(msg) {
     // https://thecrew.cc/api/message/create.php?token=__TOKEN__ POST
+   fetch (`https://thecrew.cc/api/message/create.php?token=${userSystem.token}`,{
+     method: 'POST',
+     mode: 'cors',
+     body:{message: msg}
+    })
+    .then(data => {console.log(data);});
   },
+
 
   fetchMessages() {
     // https://thecrew.cc/api/message/read.php?token=__TOKEN__ GET
@@ -18,7 +37,7 @@ const messageSystem = {
     })
     .catch(error => console.log('Request failed:', error) );
   },
-
+ 
   renderMessages(data){
     const chatBox = document.getElementById('output');
     const messages = data;
@@ -33,6 +52,7 @@ const messageSystem = {
       });
   }
 };
+messageSystem.initFields();
 
 const userSystem = {
   token: "",
@@ -92,5 +112,6 @@ const display = {
     userSystem.login(email, password);
 },
 };
+
   display.initFields();
 userSystem.checkToken();
